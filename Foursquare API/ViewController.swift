@@ -22,10 +22,10 @@ class ViewController: UIViewController {
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: "insert your own client_id"),
-            URLQueryItem(name: "client_secret", value: "insert your own client_secret"),
+            URLQueryItem(name: "client_id", value: "Replace with your Foursquare Cliend ID"),
+            URLQueryItem(name: "client_secret", value: "Replace with your Foursquare Client Secret"),
             URLQueryItem(name: "ll", value: "55.751857, 37.666629"),
-            URLQueryItem(name: "v", value: "20190122"),
+            URLQueryItem(name: "v", value: "20190129"),
         ]
         
         let requestURL = urlComponents.url!
@@ -41,9 +41,9 @@ class ViewController: UIViewController {
             
             print(#function, data)
             
-            if let dataString = String(data: data, encoding: .utf8) {
-                print(#function, dataString)
-            }
+            let venues = Response(data: data)
+            
+            print(#function, venues ?? "nil")
             
         }.resume()
     }
