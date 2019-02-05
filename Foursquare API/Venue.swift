@@ -6,7 +6,7 @@
 //  Copyright © 2019 Denis Bystruev. All rights reserved.
 //
 
-import Foundation
+import MapKit
 
 struct Response: Codable {
     let response: Venues
@@ -26,7 +26,7 @@ struct Venues: Codable {
     let venues: [Venue]
 }
 
-struct Venue: Codable {
+class Venue: NSObject, Codable {
     let name: String
     let location: Location
 }
@@ -34,4 +34,14 @@ struct Venue: Codable {
 struct Location: Codable {
     let lat: Double
     let lng: Double
+}
+
+extension Venue: MKAnnotation {
+    var coordinate: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: location.lat, longitude: location.lng)
+    }
+    
+    var title: String? {
+        return name
+    }
 }

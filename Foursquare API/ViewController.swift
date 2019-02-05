@@ -6,9 +6,14 @@
 //  Copyright © 2019 Denis Bystruev. All rights reserved.
 //
 
+import MapKit
 import UIKit
 
 class ViewController: UIViewController {
+    
+    @IBOutlet weak var topStackView: UIStackView!
+    @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var tableView: UITableView!
     
     let url = URL(string: "https://api.foursquare.com/v2/venues/search")!
 
@@ -22,15 +27,13 @@ class ViewController: UIViewController {
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: "Replace with your Foursquare Cliend ID"),
-            URLQueryItem(name: "client_secret", value: "Replace with your Foursquare Client Secret"),
+            URLQueryItem(name: "client_id", value: "Get Client ID from https://foursquare.com/developers/apps"),
+            URLQueryItem(name: "client_secret", value: "Get Client Secret from https://foursquare.com/developers/apps"),
             URLQueryItem(name: "ll", value: "55.751857, 37.666629"),
-            URLQueryItem(name: "v", value: "20190129"),
+            URLQueryItem(name: "v", value: "20190205"),
         ]
         
         let requestURL = urlComponents.url!
-        
-        print(#function, requestURL.absoluteString)
         
         URLSession.shared.dataTask(with: requestURL) { data, _, _ in
             
@@ -39,15 +42,31 @@ class ViewController: UIViewController {
                 return
             }
             
-            print(#function, data)
+            guard let venues = Response(data: data) else {
+                print(#function, "ERROR: List of venues is empty")
+                return
+            }
             
-            let venues = Response(data: data)
-            
-            print(#function, venues ?? "nil")
+            DispatchQueue.main.async {
+                let venues = venues.response.venues
+                
+                self.navigationItem.title = "Venues loaded: \(venues.count)"
+                
+                self.mapView.showAnnotations(venues, animated: true)
+            }
             
         }.resume()
     }
-
-
 }
 
+extension ViewController {
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        if size.height < size.width {
+            topStackView.axis = .horizontal
+        } else {
+            topStackView.axis = .vertical
+        }
+    }
+}
