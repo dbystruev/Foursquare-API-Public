@@ -19,6 +19,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
         loadData()
     }
     
@@ -27,8 +28,8 @@ class ViewController: UIViewController {
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: "Get Client ID from https://foursquare.com/developers/apps"),
-            URLQueryItem(name: "client_secret", value: "Get Client Secret from https://foursquare.com/developers/apps"),
+            URLQueryItem(name: "client_id", value: "Please get your key from https://developer.foursquare.com/"),
+            URLQueryItem(name: "client_secret", value: "Please get your key from https://developer.foursquare.com/"),
             URLQueryItem(name: "ll", value: "55.751857, 37.666629"),
             URLQueryItem(name: "v", value: "20190205"),
         ]
@@ -68,5 +69,16 @@ extension ViewController {
         } else {
             topStackView.axis = .vertical
         }
+    }
+}
+
+extension ViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        
+        mapView.deselectAnnotation(view.annotation, animated: true)
+        
+        guard let venue = view.annotation as? Venue else { return }
+        
+        print(#function, venue)
     }
 }
