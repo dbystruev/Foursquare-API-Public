@@ -56,8 +56,18 @@ struct Icon: Codable {
     let prefix: String
     let suffix: String
     
-    func fetch(completion: (UIImage?) -> Void) {
-        // TODO: fetch the picture
+    func fetch(completion: @escaping (UIImage?) -> Void) {
+        let name = "\(prefix)88\(suffix)"
+        
+        guard let url = URL(string: name) else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            guard let data = data else { return }
+            
+            let image = UIImage(data: data)
+            
+            completion(image)
+        }.resume()
     }
 }
 

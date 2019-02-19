@@ -16,6 +16,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     let url = URL(string: "https://api.foursquare.com/v2/venues/search")!
+    
+    var controller: VenueTableViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,8 +30,8 @@ class ViewController: UIViewController {
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: "Please get your key from https://developer.foursquare.com/"),
-            URLQueryItem(name: "client_secret", value: "Please get your key from https://developer.foursquare.com/"),
+            URLQueryItem(name: "client_id", value: "Please get your key at https://developer.foursquare.com"),
+            URLQueryItem(name: "client_secret", value: "Please get your key at https://developer.foursquare.com"),
             URLQueryItem(name: "ll", value: "55.751857, 37.666629"),
             URLQueryItem(name: "v", value: "20190205"),
         ]
@@ -79,6 +81,17 @@ extension ViewController: MKMapViewDelegate {
         
         guard let venue = view.annotation as? Venue else { return }
         
-        print(#function, venue)
+        controller?.venue = venue
+    }
+}
+
+// MARK: - ... Navigation
+extension ViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "VenueSegue" else { return }
+        
+        guard let controller = segue.destination as? VenueTableViewController else { return }
+        
+        self.controller = controller
     }
 }

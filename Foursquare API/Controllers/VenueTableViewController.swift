@@ -9,7 +9,11 @@
 import UIKit
 
 class VenueTableViewController: UITableViewController {
-    var venue: Venue?
+    var venue: Venue? {
+        didSet {
+            updateUI()
+        }
+    }
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
